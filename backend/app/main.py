@@ -18,7 +18,5 @@ app.add_middleware(
 
 
 GraphRoute().configure_routes(app)
-#Routes().configure_routes(app)
-#MovieRoutes().configure_routes(app)
 
 debug_configurations()
