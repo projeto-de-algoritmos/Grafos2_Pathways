@@ -1,0 +1,5 @@
+singleton-decorator===1.0.0
+#IMDbPY===6.8
+debugpy
+libspatialindex-git
+osmnx
