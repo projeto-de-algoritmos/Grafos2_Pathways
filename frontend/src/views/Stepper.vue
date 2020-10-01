@@ -5,47 +5,56 @@
         <v-stepper-step
             :complete="stepperStep > 1"
             step="1">
-            Select an app
-            <small>Summarize if needed</small>
+            Selecione a área
+            <small>O nível de zoom deve estar entre 16 e 18</small>
         </v-stepper-step>
 
         <v-stepper-content step="1">
-            <MapSearcher/>
+            <MapSearcher
+                @areaSelected="areaSelected"/>
         </v-stepper-content>
 
         <v-stepper-step
             :complete="stepperStep > 2"
             step="2">
-            Configure analytics for this app
+            Selecionar pontos
         </v-stepper-step>
 
-        <v-stepper-content step="2">
-            <v-card
-                color="grey lighten-1"
-                class="mb-12"
-                height="200px"
-            ></v-card>
-            <v-btn
-                color="primary"
-                @click="stepperStep = 3">
-                Continue
-            </v-btn>
-            <v-btn text>
-                Cancel
-            </v-btn>
+        <v-stepper-content 
+            eager
+            step="2">
+            <MapRenderer 
+                :coordinates="coordinates" />
         </v-stepper-content>
     </v-stepper>
 </template>
 
 <script>
 import MapSearcher from "./maps/MapSearcher"
+import MapRenderer from "./maps/MapRenderer"
 
 export default {
     data: () => ({
-        stepperStep: 1
+        stepperStep: 1,
+        coordinates: {
+            left: 0, 
+            right: 0, 
+            top: 0, 
+            bottom:0
+        }
     }),
     components: {
-        MapSearcher
+        MapSearcher,
+        MapRenderer
+    },
+    methods: {
+        areaSelected({ left, right, top, bottom }) {
+            this.stepperStep++
+            this.coordinates = {
+                left, right, top, bottom
+            }
+
+        }
     }
 }
 </script>

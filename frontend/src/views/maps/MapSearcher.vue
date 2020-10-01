@@ -1,13 +1,33 @@
 <template>
     <div id="map-container">
-        <div class="info" style="width: 20%">
-            <span>Center: {{ center }}</span>
-            <span>Zoom: {{ zoom }}</span>
-            <span>Bounds: {{ bounds }}</span>
+        <div class="pa-3 left-side">
+
+            <v-text-field
+                readonly
+                v-model="zoom"
+                label="Nível de zoom" />
+            <v-text-field
+                readonly
+                v-model="topLat"
+                label="Norte" />
+            <v-text-field
+                readonly
+                v-model="bottomLat"
+                label="Sul" />
+            <v-text-field
+                readonly
+                v-model="rigthLog"
+                label="Leste" />
+            <v-text-field
+                readonly
+                v-model="leftLog"
+                label="Oeste" />
 
             <v-btn
+                color="primary"
+                depressed
                 @click="searchByCoordinates">
-                Realizar busca com o endereço da região atual
+                Selecionar área
             </v-btn>
         </div>
         <l-map
@@ -34,16 +54,16 @@ export default {
     data () {
         return {
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-            zoom: 3,
-            center: [47.413220, -1.219482],
+            zoom: 16,
+            center: {
+                lat: (-15.817726838705601 + -15.832694018132468)/2,
+                lng: (-48.06909458456959 + -48.05246488867724)/2
+            },
             bounds: null,
-            client: axios.create({ baseURL: "https://www.openstreetmap.org/api/0.6/"}),
-            valuesToSearch: {
-                topLat: 0, 
-                bottomLat: 0,
-                rigthLog: 0,
-                leftLog: 0,
-            }
+            topLat: -15.817726838705601, 
+            bottomLat: -15.832694018132468,
+            rigthLog: -48.06909458456959,
+            leftLog: -48.05246488867724,
         };
     },
     methods: {
@@ -58,13 +78,12 @@ export default {
         },
         async searchByCoordinates() {
             if (this.zoom >= 16 && this.zoom <= 19) {
-                const response = await this.client.get("map.json?bbox=" +
-                    this.valuesToSearch.rigthLog + "%2C" +
-                    this.valuesToSearch.bottomLat + "%2C" +
-                    this.valuesToSearch.leftLog + "%2C" +
-                    this.valuesToSearch.topLat)
-    
-                console.log(response);
+                this.$emit('areaSelected', {
+                    top: this.topLat, 
+                    bottom: this.bottomLat,
+                    right: this.rigthLog,
+                    left:  this.leftLog,
+                })
             }
             else {
                 alert("Zoom incorreto, usar nível entre 16 e 19!!!!")
@@ -73,11 +92,10 @@ export default {
     },
     watch: {
         bounds: function(val) {
-            this.valuesToSearch.topLat = val._northEast.lat
-            this.valuesToSearch.leftLog = val._northEast.lng
-            this.valuesToSearch.bottomLat = val._southWest.lat
-            this.valuesToSearch.rigthLog = val._southWest.lng
-            console.log(this.valuesToSearch, val)
+            this.topLat = val._northEast.lat
+            this.leftLog = val._northEast.lng
+            this.bottomLat = val._southWest.lat
+            this.rigthLog = val._southWest.lng
         }
     }
 }
@@ -85,11 +103,16 @@ export default {
 
 <style lang="scss">
 #map-container {
-    height: calc(100vh - 100px);
+    height: calc(100vh - 150px);
     display: flex;
 
+    .left-side {
+        width: 20%;
+        min-width: 250px;
+    }
+
     .vue2leaflet-map {
-        z-index: 10;
+        z-index: 0;
     }
 }
 </style>
