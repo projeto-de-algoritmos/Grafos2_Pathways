@@ -22,15 +22,25 @@
                 readonly
                 v-model="leftLog"
                 label="Oeste" />
-
+        
             <v-btn
-                color="primary"
+                block
+                color="success mb-3"
                 depressed
                 @click="searchByCoordinates">
-                Selecionar área
+                Confirmar seleção
+            </v-btn>
+            <v-btn
+                block
+                color="primary"
+                depressed
+                @click="getCurrentLocation">
+                Pegar localização atual
             </v-btn>
         </div>
         <l-map
+            @ready="doSomethingOnReady()"
+            ref="myMap" 
             style="height: 100%; width: 80%"
             :zoom="zoom"
             :center="center"
@@ -45,6 +55,7 @@
 import axios from "axios";
 import 'leaflet/dist/leaflet.css';
 import { LMap, LTileLayer } from 'vue2-leaflet';
+import L, { latLngBounds, latLng, Icon } from "leaflet";
 
 export default {
     components: {
@@ -56,14 +67,15 @@ export default {
             url: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
             zoom: 16,
             center: {
-                lat: (-15.817726838705601 + -15.832694018132468)/2,
-                lng: (-48.06909458456959 + -48.05246488867724)/2
+                lat: 0,
+                lng: 0
             },
             bounds: null,
-            topLat: -15.817726838705601, 
-            bottomLat: -15.832694018132468,
-            rigthLog: -48.06909458456959,
-            leftLog: -48.05246488867724,
+            topLat: 0, 
+            bottomLat: 0,
+            rigthLog: 0,
+            leftLog: 0,
+            map: undefined
         };
     },
     methods: {
@@ -76,17 +88,45 @@ export default {
         boundsUpdated (bounds) {
             this.bounds = bounds;
         },
+        updateMap({ latitude, longitude }) {
+            const latlnh = latLng(latitude, longitude)
+            this.map.setZoom(16)
+            this.map.setView(latlnh)
+        },
         async searchByCoordinates() {
             if (this.zoom >= 16 && this.zoom <= 19) {
-                this.$emit('areaSelected', {
-                    top: this.topLat, 
-                    bottom: this.bottomLat,
-                    right: this.rigthLog,
-                    left:  this.leftLog,
-                })
+                if (this.topLat) {
+                    this.$emit('areaSelected', {
+                        top: this.topLat, 
+                        bottom: this.bottomLat,
+                        right: this.rigthLog,
+                        left:  this.leftLog,
+                    })
+                }
+                else {
+                    alert("Selecione uma área válida no mapa")
+                }
             }
             else {
                 alert("Zoom incorreto, usar nível entre 16 e 19!!!!")
+            }
+        },
+        doSomethingOnReady() {
+            this.map = this.$refs.myMap.mapObject
+        },
+        getCurrentLocation() {
+            const _this = this
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position, err) => {
+                    if (err) {
+                        alert(err)
+                    }
+                    else {
+                        _this.updateMap(position.coords)
+                    }
+                });
+            } else {
+                alert("Geolocation is not supported by this browser.");
             }
         }
     },
