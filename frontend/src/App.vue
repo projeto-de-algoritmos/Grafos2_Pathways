@@ -7,7 +7,7 @@
         dark>
         <div class="d-flex align-center">
             <v-icon class="mr-2">mdi-map-marker-distance</v-icon>
-            <h2>PathWays</h2>
+            <h2>Pathways</h2>
         </div>
 
         <v-spacer></v-spacer>
