@@ -33,21 +33,6 @@ O usuário pode selecionar sua posição atual com base nas api's de geolocaliza
     - Bibliotecas: [LeafletJs](https://leafletjs.com/)<br>
 
 <hr>
-<<<<<<< HEAD
-
-## Screenshots
-
-![](images/initial_1.png)
-![](images/initial_2.png)
-![](images/initial_3.png)
-![](images/initial_4.png)
-![](images/initial_5.png)
-![](images/initial_6.png)
-
-
-<hr>
-=======
->>>>>>> 9e99401478d528ede2a6f8b4c35a735ff7c033bb
 
 ## Screenshots
 
@@ -139,7 +124,7 @@ Você pode assistir o vídeo a seguir para entender como utilizar
 o projeto.
 
 - Download na pasta `images/Como usar o projeto .mp4` ou
-- Assista pelo YouTube: TODO
+- Assista pelo YouTube: https://youtu.be/w4gyJiT8JKA
 
 1. Abra o navegador web de sua escolha;<br>
 2. Digite na barra de busca o endereço informado pelo frontend (por padrão `http://localhost:8080/` caso você não tenha nenhuma outra aplicação utilizando essa porta);
